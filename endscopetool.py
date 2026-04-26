@@ -54,10 +54,9 @@ class EndscopeConnection:
         return reply.decode()
 
     async def start_video(self) -> None:
-        # three times according to captured traffic
+        # three times according to captured traffic, but works fine sent once?
         data = "\x20\x36\x00\x02".encode()
-        for _ in range(3):
-            await self.vid.send(data)
+        await self.vid.send(data)
 
     async def stop_video(self) -> None:
         data = "\x20\x37".encode()
