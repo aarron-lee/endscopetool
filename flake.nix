@@ -4,6 +4,9 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
     flake-utils.url = "github:numtide/flake-utils";
     git-hooks.url = "github:cachix/git-hooks.nix";
+    git-hooks.inputs.nixpkgs.follows = "nixpkgs";
+    flint.url = "github:notashelf/flint";
+    flint.inputs.nixpkgs.follows = "nixpkgs";
   };
   outputs =
     {
@@ -11,6 +14,7 @@
       nixpkgs,
       flake-utils,
       git-hooks,
+      flint,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -54,6 +58,12 @@
             };
             ruff.enable = true;
             ruff-format.enable = true;
+            flint = {
+              enable = true;
+              name = "flint";
+              entry = "${flint.packages.${system}.default}/bin/flint --fail-if-multiple-versions";
+              files = "flake\\.(nix|lock)$";
+            };
           };
         };
       in
@@ -80,6 +90,7 @@
           packages = [
             pkgs.nixfmt-rfc-style
             pkgs.gtk3
+            flint.packages.${system}.default
             (python.withPackages deps)
           ];
         };
